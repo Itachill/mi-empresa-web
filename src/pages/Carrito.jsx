@@ -1,9 +1,23 @@
 import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CarritoContext from '../context/CarritoContext.jsx';
 import './Carrito.css';
 
 function Carrito() {
   const { carrito, eliminarProducto, vaciarCarrito } = useContext(CarritoContext);
+  const navigate = useNavigate();
+
+  const finalizarCompra = () => {
+    if (carrito.length === 0) {
+      alert('El carrito está vacío');
+      return;
+    }
+
+    localStorage.setItem('ventaActual', JSON.stringify(carrito));
+    alert('Compra realizada con éxito');
+    vaciarCarrito();
+    navigate('/');
+  };
 
   const total = carrito.reduce((acc, p) => acc + p.precio * p.cantidad, 0);
 
@@ -26,7 +40,7 @@ function Carrito() {
           <div className="total-carrito">Total: ${total}</div>
           <div className="acciones">
             <button onClick={vaciarCarrito}>Vaciar carrito</button>
-            <button>Ir a pagar</button>
+            <button onClick={finalizarCompra}>Finalizar compra</button>
           </div>
         </div>
       )}
